@@ -165,6 +165,16 @@
       .frame{height:68vh}
       nav{display:none}
     }
+    /* 728x90 slot above the game */
+.ad-slot{
+  display:flex;
+  justify-content:center;
+  margin:12px 0 16px;
+}
+.ad-slot iframe{
+  max-width:100%;
+}
+
   </style>
 
   <!-- JSON-LD: Organization -->
@@ -300,6 +310,59 @@
       <h2>Play Space Waves Unblocked (Free Browser Version)</h2>
       <p class="small">Runs in your browser. If your network blocks iframes, use the official mobile apps below.</p>
 
+<!-- 728x90 banner slot -->
+<div class="ad-slot" aria-label="Banner">
+  <iframe
+    id="adFrame"
+    width="728"
+    height="90"
+    loading="lazy"
+    data-src="https://script.google.com/macros/s/AKfycbxElJyDBmmrW3vEJxJ65DI6IexWYTgK2G2fh5xXWqkCDI8ZMOu2MQJTtP49DtLggKbrdg/exec"
+    style="border:0; overflow:hidden; display:block;"
+    scrolling="no"
+  ></iframe>
+</div>
+
+<script>
+  (() => {
+    const frame = document.getElementById("adFrame");
+    const baseUrl = frame.dataset.src;
+    let started = false;
+
+    const refresh = () => {
+      // pause when tab is hidden (saves bandwidth/CPU)
+      if (document.visibilityState !== "visible") return;
+
+      // cache-buster so the browser actually reloads it
+      const sep = baseUrl.includes("?") ? "&" : "?";
+      frame.src = baseUrl + sep + "t=" + Date.now();
+    };
+
+    const start = () => {
+      if (started) return;
+      started = true;
+      refresh();                   // load immediately
+      setInterval(refresh, 30000); // then every 30s
+    };
+
+    // start when near viewport
+    if ("IntersectionObserver" in window) {
+      const io = new IntersectionObserver((entries, obs) => {
+        if (entries.some(e => e.isIntersecting)) {
+          start();
+          obs.disconnect();
+        }
+      }, { rootMargin: "200px 0px" });
+      io.observe(frame);
+    } else {
+      start();
+    }
+  })();
+</script>
+
+
+
+      
       <!-- The ONLY element that goes fullscreen -->
       <div id="gameShell" class="game-shell" aria-label="Game area">
         <!-- Fullscreen controls overlay -->
